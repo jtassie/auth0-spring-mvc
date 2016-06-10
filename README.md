@@ -155,23 +155,25 @@ Here you can configure where to store the Tokens and the User. By default, they'
 
 #### protected boolean isValidState(final HttpServletRequest req)
 
-By default, this library expects a Nonce value in the state query param as follows `state=nonce=xyz` where `xyz` is a randomly generated UUID.
-The NonceFactory can be used to generate such a nonce value. State may be needed to hold other attribute values hence
-why it has its own keyed value of `nonce=xyz`. For instance in SSO you may need an `externalCallbackUrl` which also needs
-to be stored down in the state param - `state=nonce=xyz&externalCallbackUrl=abc`
+By default, this library expects a Nonce value in the state query param as follows `state=nonce=B4AD596E418F7CE02A703B42F60BAD8F` where `xyz`
+is a randomly generated UUID.
 
-#### protected static Map<String, String> splitQuery(final String query) throws UnsupportedEncodingException
+The NonceFactory can be used to generate such a nonce value. State may be needed to hold other attribute values hence why it has its
+own keyed value of `nonce=B4AD596E418F7CE02A703B42F60BAD8F`. For instance in SSO you may need an `externalCallbackUrl` which also needs
+to be stored down in the state param - `state=nonce=B4AD596E418F7CE02A703B42F60BAD8F&externalCallbackUrl=http://localhost:3099/callback`
 
-Used to parse the callback query parameters and return a Map of the key value pairs. For instance, would parse
-`state=nonce=xyz&externalCallbackUrl=abc` into Map containing keys `nonce` and `externalCallbackUrl` with associated values
-
-
-### Auth0 Filter
+### Auth0Filter
 
 Customise according to need. Default behaviour is to test for presence of `Auth0User` and `Tokens` acquired after authentication
 callback. And to parse and verify the validity (including expiration) of the associated JWT id_token.
 
 Location of failed authorizations is configured using `auth0.loginRedirectOnFail` property
+
+### Auth0User
+
+Represents the normalized User Profile received from Auth0 after successful authentication. For any custom profile attributes, you can
+ get these from the `extraInfo` attribute which is a Map of any attributes received that were not already
+ explicitly mapped.
 
 ## Issue Reporting
 

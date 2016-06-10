@@ -13,10 +13,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 
 /**
@@ -89,7 +85,7 @@ public class Auth0CallbackHandler {
     protected  AuthenticationAPIClient authenticationAPIClient;
 
     @Autowired
-    public void setAppConfig(Auth0Config appConfig) {
+    protected void setAppConfig(Auth0Config appConfig) {
         this.appConfig = appConfig;
         this.redirectOnSuccess = appConfig.getLoginRedirectOnSuccess();
         this.redirectOnFail = appConfig.getLoginRedirectOnFail();
@@ -109,7 +105,7 @@ public class Auth0CallbackHandler {
                 final Credentials tokens = fetchTokens(req);
                 final UserProfile userProfile = fetchUserProfile(tokens);
                 store(tokens, new Auth0User(userProfile), req);
-                SessionUtils.setState(req, null);
+                NonceUtils.removeNonceFromStorage(req);
                 onSuccess(req, res);
             } catch (IllegalArgumentException ex) {
                 onFailure(req, res, ex);
@@ -168,41 +164,15 @@ public class Auth0CallbackHandler {
     }
 
     protected boolean isValidRequest(final HttpServletRequest req) throws IOException {
-        if (hasError(req) || !isValidState(req)) {
+        if (hasError(req)) {
             return false;
         }
-        return true;
+        final String stateFromRequest = req.getParameter("state");
+        return NonceUtils.matchesNonceInStorage(req, stateFromRequest);
     }
 
     protected static boolean hasError(final HttpServletRequest req) {
         return req.getParameter("error") != null;
     }
-
-    protected boolean isValidState(final HttpServletRequest req) {
-        final String stateValue = req.getParameter("state");
-        try {
-            final String storageState = SessionUtils.getState(req);
-            final Map<String, String> pairs = splitQuery(stateValue);
-            final String state = pairs.get("nonce");
-            return state != null && state.equals(storageState);
-        } catch (UnsupportedEncodingException e) {
-            return false;
-        }
-    }
-
-    protected static Map<String, String> splitQuery(final String query) throws UnsupportedEncodingException {
-        if (query == null) {
-            throw new NullPointerException("query cannot be null");
-        }
-        final Map<String, String> query_pairs = new LinkedHashMap<>();
-        final String[] pairs = query.split("&");
-        for (String pair : pairs) {
-            final int idx = pair.indexOf("=");
-            query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
-                    URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
-        }
-        return query_pairs;
-    }
-
 
 }
