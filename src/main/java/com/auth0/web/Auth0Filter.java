@@ -65,7 +65,7 @@ public class Auth0Filter implements Filter {
         next.doFilter(auth0RequestWrapper, res);
     }
 
-    protected void onReject(final ServletRequest request, final HttpServletResponse res) throws IOException, ServletException {
+    protected void onReject(final HttpServletResponse res) throws IOException, ServletException {
         res.sendRedirect(onFailRedirectTo);
     }
 
@@ -82,7 +82,7 @@ public class Auth0Filter implements Filter {
         final HttpServletResponse res = (HttpServletResponse) response;
         final Credentials tokens = SessionUtils.getTokens(req);
         if (!tokensExist(tokens)) {
-            onReject(req, res);
+            onReject(res);
             return;
         }
         try {
