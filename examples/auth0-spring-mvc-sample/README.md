@@ -10,6 +10,21 @@ Check that your maven version is 3.0.x or above:
 mvn -v
 ```
 
+This project relies upon `Spring Boot`.
+
+
+Benefits of Spring Boot, in particular for traditional server-side web application / microservices architectures:
+
+**Automatic configuration** - Spring Boot can automatically provide configuration for application functionality common to many Spring applications.
+
+**Starter dependencies** - Tell Spring Boot what kind of functionality you need, and it will ensure that the libraries needed are added to the build.
+
+**Command-line interface** - Optional feature of Spring Boot lets you write complete applications with just application code, but no need for a traditional
+ project build.
+
+**The Actuator** - Gives you insight into what's going on inside of a running Spring Boot application.
+
+
 ### Setup
 
 Create an [Auth0 Account](https://auth0.com) (if not already done so - free!).
@@ -68,6 +83,18 @@ Then, go to [http://localhost:3099/login](http://localhost:3099/login).
 #### 2. Home
 
 ![](img/2.home.jpg)
+
+
+Finally, in addition, using Spring Boot `actuator` we can easily verify various health and performance statistics for our running application.
+
+Here are just a few of the available endpoints:
+
+```
+http://localhost:3099/metrics
+http://localhost:3099/health
+http://localhost:3099/mappings
+http://localhost:3099/env
+```
 
 
 ---

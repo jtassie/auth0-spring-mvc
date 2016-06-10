@@ -6,40 +6,172 @@ You can use  [Auth0](https://www.auth0.com) to add username/password authenticat
 
 ## Learn how to use it
 
-[Please read this tutorial](https://docs.auth0.com/server-platforms/java-spring-servlet) to learn how to use this SDK.
+[Please read this tutorial](https://docs.auth0.com/server-platforms/java-spring-mvc) to learn how to use this SDK.
 
-## Extensibility points
-### Auth0 Servlet Callback
+You may also find our Sample projects the easiest way to learn simply by installing and running, then inspecting the samples code.
+
+
+## Default Configuration
+
+### Auth0Config
+
+This holds the default Spring configuration for the library.
+
+```
+@Configuration
+@ConfigurationProperties("auth0")
+@PropertySources({@PropertySource("classpath:auth0.properties")})
+```
+
+Note the above. The expectation is that this library will find `auth0.properties` on the classpath.
+If you are writing your Client application using `Spring Boot` for example, this is as simple as dropping
+the following file into the `src/main/resources` directory alongside `application.properties`.
+
+Here is an example:
+
+```
+auth0.domain: {your domain}
+auth0.clientId: {your client id}
+auth0.clientSecret: {your secret}
+auth0.onLogoutRedirectTo: /login
+auth0.securedRoute: /portal/*
+auth0.loginCallback: /callback
+auth0.loginRedirectOnSuccess: /portal/home
+auth0.loginRedirectOnFail: /login
+auth0.servletFilterEnabled: true
+```
+
+Please take a look at the sample that accompanies this library for an easy seed project to see this working.
+
+Here is a breakdown of what each attribute means:
+
+`auth0.domain` - This is your auth0 domain (tenant you have created when registering with auth0 - account name)
+
+`auth0.clientId` - This is the client id of your auth0 application (see Settings page on auth0 dashboard)
+
+`auth0.clientSecret` - This is the client secret of your auth0 application (see Settings page on auth0 dashboard)
+
+`auth0.onLogoutRedirectTo` - This is the page / view that users of your site are redirected to on logout. Should start with `/`
+
+`auth0.securedRoute`: - This is the URL pattern to secure a URL endpoint. Should start with `/`
+
+`auth0.loginCallback` -  This is the URL context path for the login callback endpoint. Should start with `/`
+
+`auth0.loginRedirectOnSuccess` - This is the landing page URL context path for a successful authentication. Should start with `/`
+
+`auth0.loginRedirectOnFail` - This is the URL context path for the page to redirect to upon failure. Should start with `/`
+
+`auth0.servletFilterEnabled` - This is a boolean value that switches having an authentication filter enabled On / Off.
+
+
+## Extension Points in Library
+
+Most of the library can be extended, overridden or altered according to need. Bear in mind also that this library can
+be leveraged as a dependency by other libraries for feaatures such as the Auth0CallbackHandler, NonceGenerator and SessionUtils.
+But perhaps the library depending on this library has its own Security Filter solution. Because we are using Spring and may wish
+to `deactivate` the Auth0Filter then simply set the properties entry for `auth0.servletFilterEnabled` to `false`. This will exclude
+injection of the Auth0Filter when parsing the Java Spring context class.
+
+### Auth0CallbackHandler
+
+Designed to be very flexible, you can choose between composition and inheritance to declare a Controller that delegates
+to this CallbackHandler - expects to receive an authorization code - using OIDC / Oauth2 Authorization Code Grant Flow.
+Using inheritance offers full opportunities to override specific methods and use alternate implementations override specific
+methods and use alternate implementations.
+
+##### Example usages
+
+Example usage - Simply extend this class and define Controller in subclass
+
+```
+package com.auth0.example;
+
+import com.auth0.web.Auth0CallbackHandler;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+ @Controller
+ public class CallbackController extends Auth0CallbackHandler {
+
+     @RequestMapping(value = "${auth0.loginCallback}", method = RequestMethod.GET)
+     protected void callback(final HttpServletRequest req, final HttpServletResponse res)
+                                                     throws ServletException, IOException {
+         super.handle(req, res);
+     }
+ }
+```
+
+Example usage - Create a Controller, and use composition, simply pass your action requests on to the handle(req, res) method of this delegate class.
+
+```
+package com.auth0.example;
+
+import Auth0CallbackHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@Controller
+public class CallbackController {
+
+   @Autowired
+   protected Auth0CallbackHandler callback;
+
+   @RequestMapping(value = "${auth0.loginCallback}", method = RequestMethod.GET)
+   protected void callback(final HttpServletRequest req, final HttpServletResponse res)
+                                                   throws ServletException, IOException {
+       callback.handle(req, res);
+   }
+}
+
+```
+
+List of functions available for override:
+
 
 #### protected void onSuccess(HttpServletRequest req, HttpServletResponse resp)
 
-Here you can configure what to do after successful authentication. By default, it redirects to the URL configured in the `web.xml`
+Here you can configure what to do after successful authentication. Uses `auth0.loginRedirectOnSuccess` property
 
 ####	protected void onFailure(HttpServletRequest req, HttpServletResponse resp, Exception ex)
 
-Here you can configure what to do after failure authentication. By default, it redirects to the URL configured in the `web.xml`
+Here you can configure what to do after failure authentication. Uses `auth0.loginRedirectOnFail` property
 
-#### protected void store(Tokens tokens, Auth0User user, HttpServletRequest req)
+####  protected void store(final Credentials tokens, final Auth0User user, final HttpServletRequest req)
 
-Here you can configure where to store the Tokens and the User. By default, they're stored in the `Session` in the `tokens` and `user` fields
+Here you can configure where to store the Tokens and the User. By default, they're stored in the `Session` in the `tokens` and `auth0User` fields
+
+#### protected boolean isValidState(final HttpServletRequest req)
+
+By default, this library expects a Nonce value in the state query param as follows `state=nonce=xyz` where `xyz` is a randomly generated UUID.
+The NonceFactory can be used to generate such a nonce value. State may be needed to hold other attribute values hence
+why it has its own keyed value of `nonce=xyz`. For instance in SSO you may need an `externalCallbackUrl` which also needs
+to be stored down in the state param - `state=nonce=xyz&externalCallbackUrl=abc`
+
+#### protected static Map<String, String> splitQuery(final String query) throws UnsupportedEncodingException
+
+Used to parse the callback query parameters and return a Map of the key value pairs. For instance, would parse
+`state=nonce=xyz&externalCallbackUrl=abc` into Map containing keys `nonce` and `externalCallbackUrl` with associated values
+
 
 ### Auth0 Filter
 
-#### protected Tokens loadTokens(ServletRequest req, ServletResponse resp)
+Customise according to need. Default behaviour is to test for presence of `Auth0User` and `Tokens` acquired after authentication
+callback. And to parse and verify the validity (including expiration) of the associated JWT id_token.
 
-You can specify where to get the tokens from. If you changed where they're saved in the Callback, then you should change it here. Now, they're saved in the `tokens` field of the `Session`
-
-#### protected Auth0User loadUser(ServletRequest req)
-
-You can specify where to get the User from. If you changed where they're saved in the Callback, then you should change it here. Now, they're saved in the `user` field of the `Session`
-
-#### protected void onSuccess(ServletRequest req, ServletResponse resp, FilterChain next, Auth0User user)
-
-By default, on success we wrap the `Request` with the `Auth0Request` so that we change the `UserPrincipal` to be a `Auth0User`. You can of course change that here.
-
-#### protected void onReject(ServletRequest req, ServletResponse resp, FilterChain next, Auth0User user)
-
-By default, on we redirect to the URL configured in the `web.xml`. You can override this and change that.
+Location of failed authorizations is configured using `auth0.loginRedirectOnFail` property
 
 ## Issue Reporting
 

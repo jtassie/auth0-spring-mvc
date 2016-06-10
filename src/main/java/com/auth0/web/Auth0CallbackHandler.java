@@ -21,21 +21,24 @@ import java.util.Map;
 
 /**
  *
- * Example usage. - Create a Controller, and use delegation and simply pass your action requests on to the handle(req, res)
+ * Using composition or inheritance to use this callback handler from a Controller
+ *
+ *
+ * Example usage - Create a Controller, and use composition, simply pass your action requests on to the handle(req, res)
  * method of this delegate class.
  *
  * package com.auth0.example;
  *
- *import Auth0CallbackHandler;
- *import org.springframework.beans.factory.annotation.Autowired;
- *import org.springframework.stereotype.Controller;
- *import org.springframework.web.bind.annotation.RequestMapping;
- *import org.springframework.web.bind.annotation.RequestMethod;
+ * import Auth0CallbackHandler;
+ * import org.springframework.beans.factory.annotation.Autowired;
+ * import org.springframework.stereotype.Controller;
+ * import org.springframework.web.bind.annotation.RequestMapping;
+ * import org.springframework.web.bind.annotation.RequestMethod;
  *
- *import javax.servlet.ServletException;
- *import javax.servlet.http.HttpServletRequest;
- *import javax.servlet.http.HttpServletResponse;
- *import java.io.IOException;
+ * import javax.servlet.ServletException;
+ * import javax.servlet.http.HttpServletRequest;
+ * import javax.servlet.http.HttpServletResponse;
+ * import java.io.IOException;
  *
  * @Controller
  * public class CallbackController {
@@ -43,12 +46,38 @@ import java.util.Map;
  *    @Autowired
  *    protected Auth0CallbackHandler callback;
  *
- *    @RequestMapping(value = "/callback", method = RequestMethod.GET)
+ *    @RequestMapping(value = "${auth0.loginCallback}", method = RequestMethod.GET)
  *    protected void callback(final HttpServletRequest req, final HttpServletResponse res)
  *                                                    throws ServletException, IOException {
  *        callback.handle(req, res);
  *    }
  * }
+ *
+ * Example usage - Simply extend this class and define Controller in subclass
+ *
+ *
+ *  package com.auth0.example;
+ *
+ * import com.auth0.web.Auth0CallbackHandler;
+ * import org.springframework.stereotype.Controller;
+ * import org.springframework.web.bind.annotation.RequestMapping;
+ * import org.springframework.web.bind.annotation.RequestMethod;
+ *
+ * import javax.servlet.ServletException;
+ * import javax.servlet.http.HttpServletRequest;
+ * import javax.servlet.http.HttpServletResponse;
+ * import java.io.IOException;
+ *
+ *  @Controller
+ *  public class CallbackController extends Auth0CallbackHandler {
+ *
+ *      @RequestMapping(value = "${auth0.loginCallback}", method = RequestMethod.GET)
+ *      protected void callback(final HttpServletRequest req, final HttpServletResponse res)
+ *                                                      throws ServletException, IOException {
+ *          super.handle(req, res);
+ *      }
+ *  }
+ *
  *
  *
  */
@@ -115,9 +144,9 @@ public class Auth0CallbackHandler {
         final String redirectUri = req.getRequestURL().toString();
         try {
             final Credentials credentials = authenticationAPIClient
-                    .tokenUsingClientSecret(authorizationCode, appConfig.getClientSecret(), redirectUri).execute();
+                    .token(authorizationCode, redirectUri)
+                    .setClientSecret(appConfig.getClientSecret()).execute();
             return credentials;
-
         } catch (Auth0Exception e) {
             throw new IllegalStateException("Cannot get Token from Auth0", e);
         }
@@ -153,9 +182,9 @@ public class Auth0CallbackHandler {
     protected boolean isValidState(final HttpServletRequest req) {
         final String stateValue = req.getParameter("state");
         try {
+            final String storageState = SessionUtils.getState(req);
             final Map<String, String> pairs = splitQuery(stateValue);
             final String state = pairs.get("nonce");
-            final String storageState = SessionUtils.getState(req);
             return state != null && state.equals(storageState);
         } catch (UnsupportedEncodingException e) {
             return false;

@@ -5,7 +5,7 @@
 
     <groupId>com.auth0</groupId>
     <artifactId>auth0-spring-mvc</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>auth0-spring-mvc</name>
     <description>Permits easy integration between Auth0 and a Spring app</description>
 
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>auth0</artifactId>
-            <version>0.3.0</version>
+            <version>0.4.0</version>
         </dependency>
 
         <dependency>

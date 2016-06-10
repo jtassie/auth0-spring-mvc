@@ -40,6 +40,7 @@ public class Auth0Config {
     private String onLogoutRedirectTo;
     private String loginRedirectOnSuccess;
     private String loginRedirectOnFail;
+    private String loginCallback;
     private Boolean servletFilterEnabled;
 
     private String securedRoute;
@@ -98,6 +99,14 @@ public class Auth0Config {
 
     public void setSecuredRoute(String securedRoute) {
         this.securedRoute = securedRoute;
+    }
+
+    public String getLoginCallback() {
+        return loginCallback;
+    }
+
+    public void setLoginCallback(String loginCallback) {
+        this.loginCallback = loginCallback;
     }
 
     public Boolean getServletFilterEnabled() {

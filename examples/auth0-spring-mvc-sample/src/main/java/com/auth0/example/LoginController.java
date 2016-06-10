@@ -32,13 +32,15 @@ public class LoginController {
         initializeNonce(req);
         model.put("clientId", auth0Config.getClientId());
         model.put("domain", auth0Config.getDomain());
+        model.put("loginCallback", auth0Config.getLoginCallback());
         model.put("state", "nonce=" + SessionUtils.getState(req));
         return "login";
     }
 
     private void initializeNonce(final HttpServletRequest req) {
+        final String nonce = NonceFactory.create();
         if (SessionUtils.getState(req) == null) {
-            SessionUtils.setState(req, NonceFactory.create());
+            SessionUtils.setState(req, nonce);
         }
     }
 
