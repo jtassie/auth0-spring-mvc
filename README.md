@@ -1,14 +1,39 @@
-# Auth0 and Java
+# Auth0 Spring MVC
 
-[Auth0](https://www.auth0.com) is a cloud service that provides a turn-key solution for authentication, authorization and Single Sign On.
+A modern Java Spring library that allows you to use Auth0 with Java Spring for server-side MVC web apps. Leverages Spring Boot dependencies.
+Validates the JWT from Auth0 in every API call to assert authentication according to configuration. If your application only needs secured
+endpoints and the ability to programmatically work with a Principal object for GrantedAuthority checks this library is a good fit. However,
+if you are already using Java Spring and wish to leverage fully Java Spring Security - with powerful support for Security Annotations, Security
+JSTL Tag libraries, Fine-grained Annotation level method security and URL endpoint security at the Role / Group level - then see this project
+[Auth0 Spring Security MVC](https://github.com/auth0/auth0-spring-security-mvc) and associated sample
+[Auth0 Spring Security MVC Sample](https://github.com/auth0-samples/auth0-spring-security-mvc-sample)
 
-You can use  [Auth0](https://www.auth0.com) to add username/password authentication, support for enterprise identity like Active Directory or SAML and also for social identities like Google, Facebook or Salesforce among others to your web, API and mobile native apps.
+
+## Download
+
+Get Auth0 Spring Security MVC via Maven:
+
+```xml
+<dependency>
+  <groupId>com.auth0</groupId>
+  <artifactId>auth0-spring-security-mvc</artifactId>
+  <version>0.0.2</version>
+</dependency>
+```
+
+or Gradle:
+
+```gradle
+compile 'com.auth0:auth0-spring-security-mvc:0.0.2'
+```
 
 ## Learn how to use it
 
-[Please read this tutorial](https://docs.auth0.com/server-platforms/java-spring-mvc) to learn how to use this SDK.
+Right now, the best way to learn how to use this library is to study the [Auth0 Spring MVC Sample](https://github.com/auth0-samples/auth0-spring-mvc-sample)
+and the README for that sample. Our official documentation shall at the link below shall be fully updated shortly, together with Maven publication of the latest release. For
+dev testing, just install locally with maven to get started right away. There is also a fairly comprehensive set of README information provided below.
 
-You may also find our Sample projects the easiest way to learn simply by installing and running, then inspecting the samples code.
+[Please read this tutorial](https://docs.auth0.com/server-platforms/java-spring-mvc) to learn how to use this SDK.
 
 
 ## Default Configuration

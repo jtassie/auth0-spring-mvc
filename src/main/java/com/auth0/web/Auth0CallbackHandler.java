@@ -79,10 +79,10 @@ import java.io.IOException;
 @Component
 public class Auth0CallbackHandler {
 
-    protected  String redirectOnSuccess;
-    protected  String redirectOnFail;
+    protected String redirectOnSuccess;
+    protected String redirectOnFail;
     protected Auth0Config appConfig;
-    protected  AuthenticationAPIClient authenticationAPIClient;
+    protected AuthenticationAPIClient authenticationAPIClient;
 
     @Autowired
     protected void setAppConfig(Auth0Config appConfig) {
@@ -102,7 +102,7 @@ public class Auth0CallbackHandler {
             throws IOException, ServletException {
         if (isValidRequest(req)) {
             try {
-                final Credentials tokens = fetchTokens(req);
+                final Tokens tokens = fetchTokens(req);
                 final UserProfile userProfile = fetchUserProfile(tokens);
                 store(tokens, new Auth0User(userProfile), req);
                 NonceUtils.removeNonceFromStorage(req);
@@ -129,25 +129,26 @@ public class Auth0CallbackHandler {
         res.sendRedirect(redirectOnFailLocation);
     }
 
-    protected void store(final Credentials tokens, final Auth0User user, final HttpServletRequest req) {
+    protected void store(final Tokens tokens, final Auth0User user, final HttpServletRequest req) {
         SessionUtils.setTokens(req, tokens);
         SessionUtils.setAuth0User(req, user);
     }
 
-    protected Credentials fetchTokens(final HttpServletRequest req) throws IOException {
+    protected Tokens fetchTokens(final HttpServletRequest req) throws IOException {
         final String authorizationCode = getAuthorizationCode(req);
         final String redirectUri = req.getRequestURL().toString();
         try {
-            final Credentials credentials = authenticationAPIClient
+            final Credentials creds = authenticationAPIClient
                     .token(authorizationCode, redirectUri)
                     .setClientSecret(appConfig.getClientSecret()).execute();
-            return credentials;
+            final Tokens tokens = new Tokens(creds.getIdToken(), creds.getAccessToken(), creds.getType(), creds.getRefreshToken());
+            return tokens;
         } catch (Auth0Exception e) {
             throw new IllegalStateException("Cannot get Token from Auth0", e);
         }
     }
 
-    protected UserProfile fetchUserProfile(final Credentials tokens) {
+    protected UserProfile fetchUserProfile(final Tokens tokens) {
         final String idToken = tokens.getIdToken();
         try {
             final UserProfile profile = authenticationAPIClient.tokenInfo(idToken).execute();

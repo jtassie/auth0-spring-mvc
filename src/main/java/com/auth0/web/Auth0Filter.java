@@ -1,7 +1,6 @@
 package com.auth0.web;
 
 import com.auth0.Auth0Exception;
-import com.auth0.authentication.result.Credentials;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.JWTVerifyException;
 import org.apache.commons.codec.binary.Base64;
@@ -69,18 +68,18 @@ public class Auth0Filter implements Filter {
         res.sendRedirect(onFailRedirectTo);
     }
 
-    protected boolean tokensExist(final Credentials credentials) {
-        if (credentials == null) {
+    protected boolean tokensExist(final Tokens tokens) {
+        if (tokens == null) {
             return false;
         }
-        return credentials.getIdToken() != null && credentials.getAccessToken() != null;
+        return tokens.getIdToken() != null && tokens.getAccessToken() != null;
     }
 
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain next) throws IOException, ServletException {
         final HttpServletRequest req = (HttpServletRequest) request;
         final HttpServletResponse res = (HttpServletResponse) response;
-        final Credentials tokens = SessionUtils.getTokens(req);
+        final Tokens tokens = SessionUtils.getTokens(req);
         if (!tokensExist(tokens)) {
             onReject(res);
             return;
