@@ -1,11 +1,6 @@
 package com.auth0.web;
 
-import com.auth0.Auth0;
-import com.auth0.Auth0Exception;
-import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.result.Credentials;
 import com.auth0.authentication.result.UserProfile;
-import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -82,17 +77,18 @@ public class Auth0CallbackHandler {
     protected String redirectOnSuccess;
     protected String redirectOnFail;
     protected Auth0Config appConfig;
-    protected AuthenticationAPIClient authenticationAPIClient;
+    protected Auth0Client auth0Client;
+
+    @Autowired
+    protected void setAuth0Client(final Auth0Client auth0Client) {
+        this.auth0Client = auth0Client;
+    }
 
     @Autowired
     protected void setAppConfig(Auth0Config appConfig) {
         this.appConfig = appConfig;
         this.redirectOnSuccess = appConfig.getLoginRedirectOnSuccess();
         this.redirectOnFail = appConfig.getLoginRedirectOnFail();
-        if (authenticationAPIClient == null) {
-            final Auth0 auth0 = new Auth0(appConfig.getClientId(), appConfig.getClientSecret(), appConfig.getDomain());
-            authenticationAPIClient = new AuthenticationAPIClient(auth0);
-        }
     }
 
     /**
@@ -103,7 +99,7 @@ public class Auth0CallbackHandler {
         if (isValidRequest(req)) {
             try {
                 final Tokens tokens = fetchTokens(req);
-                final UserProfile userProfile = fetchUserProfile(tokens);
+                final UserProfile userProfile = auth0Client.getUserProfile(tokens);
                 store(tokens, new Auth0User(userProfile), req);
                 NonceUtils.removeNonceFromStorage(req);
                 onSuccess(req, res);
@@ -134,34 +130,10 @@ public class Auth0CallbackHandler {
         SessionUtils.setAuth0User(req, user);
     }
 
-    protected Tokens fetchTokens(final HttpServletRequest req) throws IOException {
-        final String authorizationCode = getAuthorizationCode(req);
+    protected Tokens fetchTokens(final HttpServletRequest req) {
+        final String authorizationCode = req.getParameter("code");
         final String redirectUri = req.getRequestURL().toString();
-        try {
-            final Credentials creds = authenticationAPIClient
-                    .token(authorizationCode, redirectUri)
-                    .setClientSecret(appConfig.getClientSecret()).execute();
-            final Tokens tokens = new Tokens(creds.getIdToken(), creds.getAccessToken(), creds.getType(), creds.getRefreshToken());
-            return tokens;
-        } catch (Auth0Exception e) {
-            throw new IllegalStateException("Cannot get Token from Auth0", e);
-        }
-    }
-
-    protected UserProfile fetchUserProfile(final Tokens tokens) {
-        final String idToken = tokens.getIdToken();
-        try {
-            final UserProfile profile = authenticationAPIClient.tokenInfo(idToken).execute();
-            return profile;
-        } catch (Exception ex) {
-            throw new IllegalStateException("Cannot get Auth0User from Auth0", ex);
-        }
-    }
-
-    protected String getAuthorizationCode(final HttpServletRequest req) {
-        final String code = req.getParameter("code");
-        Validate.notNull(code);
-        return code;
+        return auth0Client.getTokens(authorizationCode, redirectUri);
     }
 
     protected boolean isValidRequest(final HttpServletRequest req) throws IOException {
