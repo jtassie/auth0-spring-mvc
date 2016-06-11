@@ -11,12 +11,12 @@ JSTL Tag libraries, Fine-grained Annotation level method security and URL endpoi
 
 ## Download
 
-Get Auth0 Spring Security MVC via Maven:
+Get Auth0 Spring MVC via Maven:
 
 ```xml
 <dependency>
   <groupId>com.auth0</groupId>
-  <artifactId>auth0-spring-security-mvc</artifactId>
+  <artifactId>auth0-spring-mvc</artifactId>
   <version>0.0.2</version>
 </dependency>
 ```
@@ -24,7 +24,7 @@ Get Auth0 Spring Security MVC via Maven:
 or Gradle:
 
 ```gradle
-compile 'com.auth0:auth0-spring-security-mvc:0.0.2'
+compile 'com.auth0:auth0-spring-mvc:0.0.2'
 ```
 
 ## Learn how to use it
