@@ -19,17 +19,16 @@ import java.security.SignatureException;
  * Handles interception on a secured endpoint and does JWT Verification
  * Ensures for instance expired JWT tokens are not permitted access
  * Success and Failure navigation options are also configurable
- *
+ * <p>
  * This filter is ENABLED by setting the auth0.properties entry:
- *
+ * <p>
  * auth0.servletFilterEnabled: true
- *
+ * <p>
  * This option exists because a Spring App may wish to use classes
  * in this library but not have auto-configuration of the Filter enabled
- *
+ * <p>
  * A common scenario for this would be when wishing to leverage Spring Security
  * instead.
- *
  */
 public class Auth0Filter implements Filter {
 

@@ -12,10 +12,9 @@ import org.springframework.stereotype.Component;
 /**
  * Holds the default configuration for the library
  * Taken from properties files
- *
+ * <p>
  * Also initialises the Filter Servlet (Auth0Filter) for
  * secured URL endpoint interception
- *
  */
 @Component
 @Configuration

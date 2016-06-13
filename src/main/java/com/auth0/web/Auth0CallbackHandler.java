@@ -1,6 +1,5 @@
 package com.auth0.web;
 
-import com.auth0.authentication.result.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -99,13 +98,11 @@ public class Auth0CallbackHandler {
         if (isValidRequest(req)) {
             try {
                 final Tokens tokens = fetchTokens(req);
-                final UserProfile userProfile = auth0Client.getUserProfile(tokens);
-                store(tokens, new Auth0User(userProfile), req);
+                final Auth0User auth0User = auth0Client.getUserProfile(tokens);
+                store(tokens, auth0User, req);
                 NonceUtils.removeNonceFromStorage(req);
                 onSuccess(req, res);
-            } catch (IllegalArgumentException ex) {
-                onFailure(req, res, ex);
-            } catch (IllegalStateException ex) {
+            } catch (RuntimeException ex) {
                 onFailure(req, res, ex);
             }
         } else {
@@ -137,15 +134,16 @@ public class Auth0CallbackHandler {
     }
 
     protected boolean isValidRequest(final HttpServletRequest req) throws IOException {
-        if (hasError(req)) {
-            return false;
-        }
-        final String stateFromRequest = req.getParameter("state");
-        return NonceUtils.matchesNonceInStorage(req, stateFromRequest);
+        return !hasError(req) && isValidState(req);
     }
 
-    protected static boolean hasError(final HttpServletRequest req) {
+    protected boolean hasError(final HttpServletRequest req) {
         return req.getParameter("error") != null;
+    }
+
+    protected boolean isValidState(final HttpServletRequest req) {
+        final String stateFromRequest = req.getParameter("state");
+        return NonceUtils.matchesNonceInStorage(req, stateFromRequest);
     }
 
 }
