@@ -2,8 +2,9 @@
 
 A modern Java Spring library that allows you to use Auth0 with Java Spring for server-side MVC web apps. Leverages Spring Boot dependencies.
 Validates the JWT from Auth0 in every API call to assert authentication according to configuration. If your application only needs secured
-endpoints and the ability to programmatically work with a Principal object for GrantedAuthority checks this library is a good fit. However,
-if you are already using Java Spring and wish to leverage fully Java Spring Security - with powerful support for Security Annotations, Security
+endpoints and the ability to programmatically work with a Principal object for GrantedAuthority checks this library is a good fit.
+
+However, if you are already using Java Spring and wish to leverage fully Java Spring Security - with powerful support for Security Annotations, Security
 JSTL Tag libraries, Fine-grained Annotation level method security and URL endpoint security at the Role / Group level - then see this project
 [Auth0 Spring Security MVC](https://github.com/auth0/auth0-spring-security-mvc) and associated sample
 [Auth0 Spring Security MVC Sample](https://github.com/auth0-samples/auth0-spring-security-mvc-sample)
@@ -17,21 +18,22 @@ Get Auth0 Spring MVC via Maven:
 <dependency>
   <groupId>com.auth0</groupId>
   <artifactId>auth0-spring-mvc</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.1</version>
 </dependency>
 ```
 
 or Gradle:
 
 ```gradle
-compile 'com.auth0:auth0-spring-mvc:0.0.2'
+compile 'com.auth0:auth0-spring-mvc:0.0.1'
 ```
 
 ## Learn how to use it
 
-Right now, the best way to learn how to use this library is to study the [Auth0 Spring MVC Sample](https://github.com/auth0-samples/auth0-spring-mvc-sample)
-and the README for that sample. Our official documentation shall at the link below shall be fully updated shortly, together with Maven publication of the latest release. For
-dev testing, just install locally with maven to get started right away. There is also a fairly comprehensive set of README information provided below.
+Perhaps the best way to learn how to use this library is to study the  [Auth0 Spring MVC Sample](https://github.com/auth0-samples/auth0-spring-mvc-sample)
+and the README for that sample. Information on configuration and extension points is also provided in this README document below together with a link
+to our tutorial on using this library.
+
 
 [Please read this tutorial](https://docs.auth0.com/server-platforms/java-spring-mvc) to learn how to use this SDK.
 
