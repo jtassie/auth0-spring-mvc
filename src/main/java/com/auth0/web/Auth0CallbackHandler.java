@@ -38,44 +38,13 @@ import java.io.IOException;
  *      }
  *  }
  *
- *
- * Example usage - Create a Controller, and use composition, simply pass your action requests on to the handle(req, res)
- * method of this delegate class.
- *
- *
- * package com.auth0.example;
- *
- * import Auth0CallbackHandler;
- * import org.springframework.beans.factory.annotation.Autowired;
- * import org.springframework.stereotype.Controller;
- * import org.springframework.web.bind.annotation.RequestMapping;
- * import org.springframework.web.bind.annotation.RequestMethod;
- *
- * import javax.servlet.ServletException;
- * import javax.servlet.http.HttpServletRequest;
- * import javax.servlet.http.HttpServletResponse;
- * import java.io.IOException;
- *
- * @Controller
- * public class CallbackController {
- *
- *    @Autowired
- *    protected Auth0CallbackHandler callback;
- *
- *    @RequestMapping(value = "${auth0.loginCallback}", method = RequestMethod.GET)
- *    protected void callback(final HttpServletRequest req, final HttpServletResponse res)
- *                                                    throws ServletException, IOException {
- *        callback.handle(req, res);
- *    }
- * }
- *
  */
 @Component
 public class Auth0CallbackHandler {
 
     protected String redirectOnSuccess;
     protected String redirectOnFail;
-    protected Auth0Config appConfig;
+    protected Auth0Config auth0Config;
     protected Auth0Client auth0Client;
 
     @Autowired
@@ -84,10 +53,10 @@ public class Auth0CallbackHandler {
     }
 
     @Autowired
-    protected void setAppConfig(Auth0Config appConfig) {
-        this.appConfig = appConfig;
-        this.redirectOnSuccess = appConfig.getLoginRedirectOnSuccess();
-        this.redirectOnFail = appConfig.getLoginRedirectOnFail();
+    protected void setAuth0Config(final Auth0Config auth0Config) {
+        this.auth0Config = auth0Config;
+        this.redirectOnSuccess = auth0Config.getLoginRedirectOnSuccess();
+        this.redirectOnFail = auth0Config.getLoginRedirectOnFail();
     }
 
     /**
@@ -116,8 +85,8 @@ public class Auth0CallbackHandler {
     }
 
     protected void onFailure(final HttpServletRequest req, final HttpServletResponse res,
-                             Exception ex) throws ServletException, IOException {
-        ex.printStackTrace();
+                             final Exception e) throws ServletException, IOException {
+        e.printStackTrace();
         final String redirectOnFailLocation = req.getContextPath() + redirectOnFail;
         res.sendRedirect(redirectOnFailLocation);
     }
