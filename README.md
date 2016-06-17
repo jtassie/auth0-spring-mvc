@@ -31,7 +31,12 @@ compile 'com.auth0:auth0-spring-mvc:0.0.1'
 ## Learn how to use it
 
 Perhaps the best way to learn how to use this library is to study the  [Auth0 Spring MVC Sample](https://github.com/auth0-samples/auth0-spring-mvc-sample)
-and the README for that sample. Information on configuration and extension points is also provided in this README document below together with a link
+and the README for that sample.
+
+For a slightly more involved sample, that does some interesting extra actions such as Account Linking and also using our
+ Auth0.js javascript library in addition to our Lock widget, see the [Auth0 Spring MVC Social DB Connection Link Sample](https://github.com/auth0-samples/auth0-spring-boot-social-dbconnection-link)
+
+Information on configuration and extension points is also provided in this README document below together with a link
 to our tutorial on using this library.
 
 
