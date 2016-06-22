@@ -36,6 +36,10 @@ and the README for that sample.
 For a slightly more involved sample, that does some interesting extra actions such as Account Linking and also using our
  Auth0.js javascript library in addition to our Lock widget, see the [Auth0 Spring MVC Social DB Connection Link Sample](https://github.com/auth0-samples/auth0-spring-boot-social-dbconnection-link)
 
+For yet another more involved sample, that does some interesting extra actions such as Passwordless Login, Multi-Factor Authentication and Account Linking,
+see the [Auth0 Spring MVC Passwordless MFA, Account Link Sample](https://github.com/auth0-samples/auth0-spring-boot-web-jsp-passwordless)
+
+
 Information on configuration and extension points is also provided in this README document below together with a link
 to our tutorial on using this library.
 
