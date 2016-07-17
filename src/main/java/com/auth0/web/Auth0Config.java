@@ -61,6 +61,18 @@ public class Auth0Config {
     @Value(value = "${auth0.securedRoute}")
     protected String securedRoute;
 
+    /**
+     * default to HS256 for backwards compatibility
+     */
+    @Value(value = "${auth0.signingAlgorithm:HS256}")
+    protected String signingAlgorithm;
+
+    /**
+     * default to empty string as HS256 is default
+     */
+    @Value(value = "${auth0.publicKeyPath:}")
+    protected String publicKeyPath;
+
 
     public String getDomain() {
         return domain;
@@ -96,6 +108,14 @@ public class Auth0Config {
 
     public String getSecuredRoute() {
         return securedRoute;
+    }
+
+    public String getSigningAlgorithm() {
+        return signingAlgorithm;
+    }
+
+    public String getPublicKeyPath() {
+        return publicKeyPath;
     }
 
 }
