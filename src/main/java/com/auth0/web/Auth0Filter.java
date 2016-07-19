@@ -1,9 +1,11 @@
 package com.auth0.web;
 
 import com.auth0.Auth0Exception;
+import com.auth0.jwt.Algorithm;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.JWTVerifyException;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.security.SignatureException;
+
+import static com.auth0.jwt.pem.PemReader.readPublicKey;
 
 /**
  * Handles interception on a secured endpoint and does JWT Verification
@@ -49,12 +54,38 @@ public class Auth0Filter implements Filter {
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         onFailRedirectTo = filterConfig.getInitParameter("redirectOnAuthError");
-        if (onFailRedirectTo == null) {
-            throw new IllegalArgumentException("redirectOnAuthError cannot be null");
-        }
-        final String clientSecret = auth0Config.getClientSecret();
+        Validate.notNull(onFailRedirectTo);
         final String clientId = auth0Config.getClientId();
-        jwtVerifier = new JWTVerifier(new Base64(true).decodeBase64(clientSecret), clientId);
+        Validate.notNull(clientId);
+        final String signingAlgorithmStr = auth0Config.getSigningAlgorithm();
+        final Algorithm signingAlgorithm = Algorithm.valueOf(signingAlgorithmStr);
+        switch (signingAlgorithm) {
+            case HS256:
+            case HS384:
+            case HS512:
+                final String clientSecret = auth0Config.getClientSecret();
+                Validate.notNull(clientSecret);
+                jwtVerifier = new JWTVerifier(new Base64(true).decodeBase64(clientSecret), clientId);
+                return;
+            case RS256:
+            case RS384:
+            case RS512:
+                final String publicKeyPath = auth0Config.getPublicKeyPath();
+                Validate.notEmpty(publicKeyPath);
+                try {
+                    final ServletContext context = filterConfig.getServletContext();
+                    final String publicKeyRealPath = context.getRealPath(publicKeyPath);
+                    final PublicKey publicKey = readPublicKey(publicKeyRealPath);
+                    Validate.notNull(publicKey);
+                    jwtVerifier = new JWTVerifier(publicKey, clientId);
+                    return;
+                } catch (Exception e) {
+                    throw new IllegalStateException(e.getMessage(), e.getCause());
+                }
+            default:
+                throw new IllegalStateException("Unsupported signing method: " + signingAlgorithm.getValue());
+        }
+
     }
 
     protected void onSuccess(final ServletRequest req, final ServletResponse res, final FilterChain next,
