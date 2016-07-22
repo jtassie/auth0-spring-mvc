@@ -4,7 +4,7 @@
 
     <groupId>com.auth0</groupId>
     <artifactId>auth0-spring-mvc</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
     <name>auth0-spring-mvc</name>
     <description>Permits easy integration between Auth0 and a Spring app</description>
 
