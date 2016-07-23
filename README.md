@@ -9,29 +9,40 @@ JSTL Tag libraries, Fine-grained Annotation level method security and URL endpoi
 [Auth0 Spring Security MVC](https://github.com/auth0/auth0-spring-security-mvc) and associated sample
 [Auth0 Spring Security MVC Sample](https://github.com/auth0-samples/auth0-spring-security-mvc-sample)
 
-
 ## Download
 
 Get Auth0 Spring MVC via Maven:
 
 ```xml
 <dependency>
-  <groupId>com.auth0</groupId>
-  <artifactId>auth0-spring-mvc</artifactId>
-  <version>0.0.1</version>
+    <groupId>com.auth0</groupId>
+    <artifactId>auth0-spring-mvc</artifactId>
+    <version>0.1.0</version>
 </dependency>
 ```
 
 or Gradle:
 
 ```gradle
-compile 'com.auth0:auth0-spring-mvc:0.0.1'
+compile 'com.auth0:auth0-spring-mvc:0.1.0'
 ```
+
+## The Oauth Server Side Protocol
+
+This library is expected to be used in order to successfully implement the [Oauth Server Side](https://auth0.com/docs/protocols#oauth-server-side) protocol. 
+This protocol is best suited for websites that need:
+  
+  * Authenticated Users
+  * Access to 3rd party APIs on behalf of the logged in user
+  
+In the literature you might find this flow referred to as Authorization Code Grant. The full spec of this flow is [here.](https://tools.ietf.org/html/rfc6749#section-4.1)
 
 ## Learn how to use it
 
+[Please read this tutorial](https://docs.auth0.com/server-platforms/java-spring-mvc) to learn how to use this SDK.
+
 Perhaps the best way to learn how to use this library is to study the  [Auth0 Spring MVC Sample](https://github.com/auth0-samples/auth0-spring-mvc-sample)
-and the README for that sample.
+source code and its README file.
 
 For a slightly more involved sample, that does some interesting extra actions such as Account Linking and also using our
  Auth0.js javascript library in addition to our Lock widget, see the [Auth0 Spring MVC Social DB Connection Link Sample](https://github.com/auth0-samples/auth0-spring-boot-social-dbconnection-link)
@@ -39,13 +50,7 @@ For a slightly more involved sample, that does some interesting extra actions su
 For yet another more involved sample, that does some interesting extra actions such as Passwordless Login, Multi-Factor Authentication and Account Linking,
 see the [Auth0 Spring MVC Passwordless MFA, Account Link Sample](https://github.com/auth0-samples/auth0-spring-boot-web-jsp-passwordless)
 
-
-Information on configuration and extension points is also provided in this README document below together with a link
-to our tutorial on using this library.
-
-
-[Please read this tutorial](https://docs.auth0.com/server-platforms/java-spring-mvc) to learn how to use this SDK.
-
+Information on configuration and extension points for this library are also provided below. 
 
 ## Default Configuration
 
@@ -75,6 +80,8 @@ auth0.loginCallback: /callback
 auth0.loginRedirectOnSuccess: /portal/home
 auth0.loginRedirectOnFail: /login
 auth0.servletFilterEnabled: true
+auth0.signing_algorithm: HS256
+auth0.public_key_path:
 ```
 
 Please take a look at the sample that accompanies this library for an easy seed project to see this working.
