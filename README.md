@@ -72,6 +72,7 @@ Here is an example:
 
 ```
 auth0.domain: {your domain}
+auth0.issuer: {your issuer} 
 auth0.clientId: {your client id}
 auth0.clientSecret: {your secret}
 auth0.onLogoutRedirectTo: /login
@@ -89,6 +90,8 @@ Please take a look at the sample that accompanies this library for an easy seed 
 Here is a breakdown of what each attribute means:
 
 `auth0.domain` - This is your auth0 domain (tenant you have created when registering with auth0 - account name)
+
+`auth0.issuer` - This is the issuer of the JWT Token (typically full URL of your auth0 tenant account - eg. https://{tenant_name}.auth0.com/)
 
 `auth0.clientId` - This is the client id of your auth0 application (see Settings page on auth0 dashboard)
 

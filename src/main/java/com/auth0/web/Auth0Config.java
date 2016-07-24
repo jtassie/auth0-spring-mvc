@@ -37,6 +37,9 @@ public class Auth0Config {
     @Value(value = "${auth0.domain}")
     protected String domain;
 
+    @Value(value = "${auth0.issuer}")
+    protected String issuer;
+
     @Value(value = "${auth0.clientId}")
     protected String clientId;
 
@@ -76,6 +79,10 @@ public class Auth0Config {
 
     public String getDomain() {
         return domain;
+    }
+
+    public String getIssuer() {
+        return issuer;
     }
 
     public String getClientId() {
