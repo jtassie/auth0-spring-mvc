@@ -1,36 +1,15 @@
 package com.auth0.web;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.embedded.FilterRegistrationBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Component;
 
 /**
  * Holds the default configuration for the library
- * Taken from properties files
- * <p>
- * Also initialises the Filter Servlet (Auth0Filter) for
- * secured URL endpoint interception
  */
 @Component
 @Configuration
-@ConfigurationProperties("auth0")
-@PropertySources({@PropertySource("classpath:auth0.properties")})
 public class Auth0Config {
-
-    @Bean
-    public FilterRegistrationBean filterRegistration() {
-        final FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(new Auth0Filter(this));
-        registration.addUrlPatterns(securedRoute);
-        registration.addInitParameter("redirectOnAuthError", loginRedirectOnFail);
-        registration.setName("Auth0Filter");
-        return registration;
-    }
 
     @Value(value = "${auth0.domain}")
     protected String domain;

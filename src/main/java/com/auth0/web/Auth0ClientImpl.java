@@ -10,12 +10,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class Auth0ClientImpl extends com.auth0.Auth0ClientImpl {
 
-    protected Auth0Config auth0Config;
-
     @Autowired
     public Auth0ClientImpl(final Auth0Config auth0Config) {
         super(auth0Config.getClientId(), auth0Config.getClientSecret(), auth0Config.getDomain());
-        this.auth0Config = auth0Config;
     }
 
 }
