@@ -1,5 +1,7 @@
 package com.auth0.web;
 
+import com.auth0.Auth0User;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.security.Principal;

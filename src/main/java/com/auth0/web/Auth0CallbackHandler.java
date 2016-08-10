@@ -1,5 +1,6 @@
 package com.auth0.web;
 
+import com.auth0.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

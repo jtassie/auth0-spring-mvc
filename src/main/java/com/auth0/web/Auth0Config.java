@@ -1,7 +1,6 @@
 package com.auth0.web;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Component;
 @PropertySources({@PropertySource("classpath:auth0.properties")})
 public class Auth0Config {
 
-    @ConditionalOnProperty(prefix = "auth0", name = "servletFilterEnabled")
     @Bean
     public FilterRegistrationBean filterRegistration() {
         final FilterRegistrationBean registration = new FilterRegistrationBean();
