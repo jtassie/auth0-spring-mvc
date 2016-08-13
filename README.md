@@ -17,14 +17,14 @@ Get Auth0 Spring MVC via Maven:
 <dependency>
     <groupId>com.auth0</groupId>
     <artifactId>auth0-spring-mvc</artifactId>
-    <version>0.2.0</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
 or Gradle:
 
 ```gradle
-compile 'com.auth0:auth0-spring-mvc:0.2.0'
+compile 'com.auth0:auth0-spring-mvc:1.0.0'
 ```
 
 ## The Oauth Server Side Protocol
@@ -58,15 +58,12 @@ Information on configuration and extension points for this library are also prov
 
 This holds the default Spring configuration for the library.
 
-```
-@Configuration
-@ConfigurationProperties("auth0")
-@PropertySources({@PropertySource("classpath:auth0.properties")})
-```
+Note the above. The expectation is that this library will receive the following properties. 
 
-Note the above. The expectation is that this library will find `auth0.properties` on the classpath.
+Please see the samples project for this library for an example where an `auth0.properties` is placed on the classpath.
 If you are writing your Client application using `Spring Boot` for example, this is as simple as dropping
-the following file into the `src/main/resources` directory alongside `application.properties`.
+such a properties file into the `src/main/resources` directory alongside `application.properties` (or just updating 
+`application.properties` itself).
 
 Here is an example:
 
@@ -85,7 +82,7 @@ auth0.signingAlgorithm: HS256
 auth0.publicKeyPath:
 ```
 
-Please take a look at the sample that accompanies this library for an easy seed project to see this working.
+Again. please take a look at the sample that accompanies this library for an easy seed project to see this working.
 
 Here is a breakdown of what each attribute means:
 
@@ -120,6 +117,40 @@ The following two attributes are required when configuring your application with
 `auth0.signingAlgorithm` - This is signing algorithm to verify signed JWT token. Use `HS256` or `RS256`. 
 
 `auth0.publicKeyPath` - This is the path location to the public key stored locally on disk / inside your application War file WEB-INF directory. Should always be set when using `RS256`. 
+
+
+## Auth0Filter Registration
+
+This library depends entirely on Auth0Filter being registered with the Servlet Container so it will intercept all http(s) traffic
+matching the `auth0.securedRoute` context path value.
+
+The library itself provides the `Auth0Filter` implementation but does not wire it together automatically. This is the responsibility
+of the application that uses this library.
+
+Please see our sample project for this library (which is implemented using Spring Boot) for one such example on how to do this.
+For example, it uses the following custom configuration:
+
+```
+@Component
+@Configuration
+
+public class AppConfig extends Auth0Config {
+
+    @Bean
+    public FilterRegistrationBean filterRegistration() {
+        final FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(new Auth0Filter(this));
+        registration.addUrlPatterns(securedRoute);
+        registration.addInitParameter("redirectOnAuthError", loginRedirectOnFail);
+        registration.setName("Auth0Filter");
+        return registration;
+    }
+
+}
+```
+
+If you are using ordinary Spring please consult the Spring documentation for a suitable solution for this (there are several options
+depending on what works best for your particular needs).
 
 
 ## Extension Points in Library
