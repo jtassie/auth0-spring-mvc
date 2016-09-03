@@ -35,9 +35,6 @@ public class Auth0Config {
     @Value(value = "${auth0.loginCallback}")
     protected String loginCallback;
 
-    @Value(value = "${auth0.servletFilterEnabled}")
-    protected Boolean servletFilterEnabled;
-
     @Value(value = "${auth0.securedRoute}")
     protected String securedRoute;
 
@@ -84,10 +81,6 @@ public class Auth0Config {
 
     public String getLoginCallback() {
         return loginCallback;
-    }
-
-    public Boolean getServletFilterEnabled() {
-        return servletFilterEnabled;
     }
 
     public String getSecuredRoute() {
