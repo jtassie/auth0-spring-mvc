@@ -45,10 +45,10 @@ Perhaps the best way to learn how to use this library is to study the  [Auth0 Sp
 source code and its README file.
 
 For a slightly more involved sample, that does some interesting extra actions such as Account Linking and also using our
- Auth0.js javascript library in addition to our Lock widget, see the [Auth0 Spring MVC Social DB Connection Link Sample](https://github.com/auth0-samples/auth0-spring-boot-social-dbconnection-link)
+ Auth0.js javascript library in addition to our Lock widget, see the [Auth0 Spring MVC Social DB Account Link Sample](https://github.com/auth0-samples/auth0-spring-mvc-social-db-account-link-sample)
 
 For yet another more involved sample, that does some interesting extra actions such as Passwordless Login, Multi-Factor Authentication and Account Linking,
-see the [Auth0 Spring MVC Passwordless MFA, Account Link Sample](https://github.com/auth0-samples/auth0-spring-boot-web-jsp-passwordless)
+see the [Auth0 Spring MVC Passwordless, MFA, Account Link Sample](https://github.com/auth0-samples/auth0-spring-mvc-passwordless-mfa-sample)
 
 Information on configuration and extension points for this library are also provided below. 
 
