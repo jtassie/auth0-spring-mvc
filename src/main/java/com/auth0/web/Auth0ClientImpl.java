@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 /**
  * Wrapper implementation around Auth0 service calls
- * Don't expose internals of Auth0 library - Spring ready
  */
 @Service
 public class Auth0ClientImpl extends com.auth0.Auth0ClientImpl {

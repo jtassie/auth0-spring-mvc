@@ -23,8 +23,8 @@ import static com.auth0.jwt.pem.PemReader.readPublicKey;
 
 /**
  * Handles interception on a secured endpoint and does JWT Verification
- * Ensures for instance expired JWT tokens are not permitted access
- * Success and Failure navigation options are also configurable
+ * Ensures only valid JWTs are permitted on secured endpoints
+ * Success and Failure navigation options are configurable
  */
 public class Auth0Filter implements Filter {
 
@@ -38,6 +38,10 @@ public class Auth0Filter implements Filter {
         this.auth0Config = auth0Config;
     }
 
+    /**
+     * Called by the web container to indicate to a filter that it is
+     * being placed into service. Initialises configuration setup for this filter
+     */
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         onFailRedirectTo = filterConfig.getInitParameter("redirectOnAuthError");
@@ -77,16 +81,28 @@ public class Auth0Filter implements Filter {
 
     }
 
+    /**
+     * Navigation to take when a request is successful by this filter
+     */
     protected void onSuccess(final ServletRequest req, final ServletResponse res, final FilterChain next,
                              final Auth0User auth0User) throws IOException, ServletException {
         final Auth0RequestWrapper auth0RequestWrapper = new Auth0RequestWrapper((HttpServletRequest) req, auth0User);
         next.doFilter(auth0RequestWrapper, res);
     }
 
+    /**
+     * Navigation to take when a request is rejected by this filter
+     */
     protected void onReject(final HttpServletResponse res) throws IOException, ServletException {
         res.sendRedirect(onFailRedirectTo);
     }
 
+    /**
+     * Check for existence of id token and access token
+     *
+     * @param tokens the tokens object
+     * @return boolean whether both id token and access token exist
+     */
     protected boolean tokensExist(final Tokens tokens) {
         if (tokens == null) {
             return false;
@@ -94,6 +110,10 @@ public class Auth0Filter implements Filter {
         return tokens.getIdToken() != null && tokens.getAccessToken() != null;
     }
 
+    /**
+     * Perform filter check on this request - verify tokens exist and verify
+     * the id token is valid
+     */
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain next) throws IOException, ServletException {
         final HttpServletRequest req = (HttpServletRequest) request;

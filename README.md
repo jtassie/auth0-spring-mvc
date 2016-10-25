@@ -77,7 +77,6 @@ auth0.securedRoute: /portal/*
 auth0.loginCallback: /callback
 auth0.loginRedirectOnSuccess: /portal/home
 auth0.loginRedirectOnFail: /login
-auth0.servletFilterEnabled: true
 auth0.signingAlgorithm: HS256
 auth0.publicKeyPath:
 ```
@@ -103,8 +102,6 @@ Here is a breakdown of what each attribute means:
 `auth0.loginRedirectOnSuccess` - This is the landing page URL context path for a successful authentication. Should start with `/`
 
 `auth0.loginRedirectOnFail` - This is the URL context path for the page to redirect to upon failure. Should start with `/`
-
-`auth0.servletFilterEnabled` - This is a boolean value that switches having an authentication filter enabled On / Off.
 
 The default JWT Signing Algorithm is `HS256`. This is HMAC SHA256, a symmetric crypographic algorithm (HMAC), that uses the `clientSecret` to
 verify a signed JWT token. However, if you wish to configure this library to use an alternate cryptographic algorithm then use the two
