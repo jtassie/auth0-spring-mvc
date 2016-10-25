@@ -125,7 +125,6 @@ public class Auth0CallbackHandler {
      *
      * @param req the http servlet request
      * @return the tokens associated with the authentication request
-     * @throws IOException
      */
     protected Tokens fetchTokens(final HttpServletRequest req) {
         final String authorizationCode = req.getParameter("code");
