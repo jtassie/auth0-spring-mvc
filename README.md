@@ -152,11 +152,7 @@ depending on what works best for your particular needs).
 
 ## Extension Points in Library
 
-Most of the library can be extended, overridden or altered according to need. Bear in mind also that this library can
-be leveraged as a dependency by other libraries for feaatures such as the Auth0CallbackHandler, NonceGenerator and SessionUtils.
-But perhaps the library depending on this library has its own Security Filter solution. Because we are using Spring and may wish
-to `deactivate` the Auth0Filter then simply set the properties entry for `auth0.servletFilterEnabled` to `false`. This will exclude
-injection of the Auth0Filter when parsing the Java Spring context class.
+Most of the library can be extended, overridden or altered according to need.
 
 ### Auth0CallbackHandler
 
@@ -254,12 +250,6 @@ Customise according to need. Default behaviour is to test for presence of `Auth0
 callback. And to parse and verify the validity (including expiration) of the associated JWT id_token.
 
 Location of failed authorizations is configured using `auth0.loginRedirectOnFail` property
-
-### Auth0User
-
-Represents the normalized User Profile received from Auth0 after successful authentication. For any custom profile attributes, you can
- get these from the `extraInfo` attribute which is a Map of any attributes received that were not already
- explicitly mapped.
 
 ## Issue Reporting
 
