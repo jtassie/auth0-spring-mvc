@@ -67,9 +67,9 @@ public class Auth0Config {
     protected String securedRoute;
 
     /**
-     * This is a boolean value indicating whether the Secret used to verify the JWT is base64 encoded. Default is `false`
+     * This is a boolean value indicating whether the Secret used to verify the JWT is base64 encoded. Default is `true`
      */
-    @Value(value = "${auth0.base64EncodedSecret}")
+    @Value(value = "${auth0.base64EncodedSecret:true}")
     protected boolean base64EncodedSecret;
 
     /**
