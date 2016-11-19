@@ -67,6 +67,12 @@ public class Auth0Config {
     protected String securedRoute;
 
     /**
+     * This is a boolean value indicating whether the Secret used to verify the JWT is base64 encoded. Default is `true`
+     */
+    @Value(value = "${auth0.base64EncodedSecret:true}")
+    protected boolean base64EncodedSecret;
+
+    /**
      * This is signing algorithm to verify signed JWT token. Use `HS256` or `RS256`.
      * Default to HS256 for backwards compatibility
      */
@@ -116,6 +122,10 @@ public class Auth0Config {
 
     public String getSecuredRoute() {
         return securedRoute;
+    }
+
+    public boolean isBase64EncodedSecret() {
+        return base64EncodedSecret;
     }
 
     public String getSigningAlgorithm() {
