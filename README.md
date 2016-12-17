@@ -75,6 +75,7 @@ auth0.securedRoute: /portal/*
 auth0.loginCallback: /callback
 auth0.loginRedirectOnSuccess: /portal/home
 auth0.loginRedirectOnFail: /login
+auth0.base64EncodedSecret: true
 auth0.signingAlgorithm: HS256
 auth0.publicKeyPath:
 ```
@@ -91,7 +92,7 @@ Here is a breakdown of what each attribute means:
 
 `auth0.clientSecret` - This is the client secret of your auth0 application (see Settings page on auth0 dashboard)
 
-`auth0.base64_encoded_secret` - Indicates if the client secret is base64 url-safe encoded. By default is true
+`auth0.base64EncodedSecret` - Indicates if the client secret is base64 url-safe encoded. By default is true
 
 `auth0.onLogoutRedirectTo` - This is the page / view that users of your site are redirected to on logout. Should start with `/`
 
