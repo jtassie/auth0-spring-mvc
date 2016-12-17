@@ -1,8 +1,6 @@
 # Auth0 Spring MVC
 
-A modern Java Spring library that allows you to use Auth0 with Java Spring for server-side MVC web apps. Leverages Spring Boot dependencies.
-Validates the JWT from Auth0 in every API call to assert authentication according to configuration. If your application only needs secured
-endpoints and the ability to programmatically work with a Principal object for GrantedAuthority checks this library is a good fit.
+A modern Java Spring library that allows you to use Auth0 with Java Spring for server-side MVC web apps. Uses plain Spring framework. Validates the JWT from Auth0 in every API call to assert authentication according to configuration. If your application only needs secured endpoints and the ability to programmatically work with a Principal object for GrantedAuthority checks this library is a good fit.
 
 However, if you are already using Java Spring and wish to leverage fully Java Spring Security - with powerful support for Security Annotations, Security
 JSTL Tag libraries, Fine-grained Annotation level method security and URL endpoint security at the Role / Group level - then see this project
